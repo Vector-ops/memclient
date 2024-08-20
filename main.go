@@ -4,6 +4,10 @@ import (
 	"context"
 	"fmt"
 	"os"
+
+	"github.com/danvergara/gocui"
+	"github.com/vector-ops/memclient/client"
+	"github.com/vector-ops/memclient/gui"
 )
 
 const (
@@ -16,16 +20,27 @@ const (
 )
 
 func main() {
+
+	g, err := gocui.NewGui(gocui.Output256)
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	args := os.Args[1:]
 
-	client, err := New(":5000")
+	client, err := client.New(":5000")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
 	if len(args) == 0 {
-		fmt.Println("No command found.")
+		cgui := gui.New(g, client)
+		err = cgui.Run()
+		if err != nil {
+			fmt.Printf("\n\n\n\n\n\n\n\n\n")
+			panic(err)
+		}
 		return
 	}
 
@@ -95,6 +110,7 @@ func main() {
 		}
 
 		Bubbletea(data)
+
 	}
 
 }
